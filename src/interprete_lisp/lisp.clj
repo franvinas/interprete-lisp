@@ -502,9 +502,13 @@
 ; (*error* too-few-args)
 ; user=> (revisar-lae '(1 (*error* too-few-args) (*error* too-many-args) 3))
 ; (*error* too-few-args)
-;; (defn revisar-lae
-;;   "Devuelve el primer elemento que es un mensaje de error. Si no hay ninguno, devuelve nil."
-;; )
+(defn revisar-lae
+  "Devuelve el primer elemento que es un mensaje de error. Si no hay ninguno, devuelve nil."
+  [l]
+  (if (seq? l)
+    (first (filter error? l))
+  )
+)
 
 
 ; user=> (actualizar-amb '(a 1 b 2 c 3) 'd 4)

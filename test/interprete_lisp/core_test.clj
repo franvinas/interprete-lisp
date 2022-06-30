@@ -52,3 +52,13 @@
     (is (= (revisar-fnc ()) nil))
   )
 )
+
+(deftest revisar-fnc-test
+  (testing "Funcion revisar-fnc"
+    (is (= (revisar-lae '(1 2 3)) nil))
+    (is (= (revisar-lae nil) nil))
+    (is (= (revisar-lae ()) nil))
+    (is (= (revisar-lae '(1 (*error* too-few-args) 3)) '(*error* too-few-args)))
+    (is (= (revisar-lae '(1 (*error* too-few-args) (*error* too-many-args) 3)) '(*error* too-few-args)))
+  )
+)
