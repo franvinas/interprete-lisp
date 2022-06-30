@@ -53,8 +53,8 @@
   )
 )
 
-(deftest revisar-fnc-test
-  (testing "Funcion revisar-fnc"
+(deftest revisar-lae-test
+  (testing "Funcion revisar-lae"
     (is (= (revisar-lae '(1 2 3)) nil))
     (is (= (revisar-lae nil) nil))
     (is (= (revisar-lae ()) nil))
@@ -62,3 +62,12 @@
     (is (= (revisar-lae '(1 (*error* too-few-args) (*error* too-many-args) 3)) '(*error* too-few-args)))
   )
 )
+
+; user=> (actualizar-amb '(a 1 b 2 c 3) 'd 4)
+; (a 1 b 2 c 3 d 4)
+; user=> (actualizar-amb '(a 1 b 2 c 3) 'b 4)
+; (a 1 b 4 c 3)
+; user=> (actualizar-amb '(a 1 b 2 c 3) 'b (list '*error* 'mal 'hecho))
+; (a 1 b 2 c 3)
+; user=> (actualizar-amb () 'b 7)
+; (b 7)
