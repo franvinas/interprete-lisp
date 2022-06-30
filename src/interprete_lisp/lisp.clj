@@ -379,6 +379,25 @@
 ;;    Si no, devuelve una lista con un mensaje de error (una lista con *error* como primer elemento)."
 ;; )
 
+(defn upper [a]
+  (if (seq? a)
+    (if (= (count a) 0)
+      (.toUpperCase "nil") 
+      (map upper a)
+    )
+    (cond (symbol? a)
+      (if (= (.toUpperCase (str a)) "NIL")
+        "NIL"
+        (symbol (.toUpperCase (str a)))
+      )
+    (= a nil)
+      (.toUpperCase "nil") 
+    true 
+      a
+    )
+  )
+)
+
 
 ; user=> (igual? 1 1)
 ; true
@@ -422,9 +441,10 @@
 ; false
 ; user=> (igual? 'a "A")
 ; false
-;; (defn igual?
-;;   "Verifica la igualdad entre dos elementos al estilo de TLC-LISP (case-insensitive)."
-;; )
+(defn igual? [a b]
+  "Verifica la igualdad entre dos elementos al estilo de TLC-LISP (case-insensitive)."
+  (= (upper a) (upper b))
+)
 
 
 ; user=> (error? '(*error* too-few-args))
@@ -445,9 +465,11 @@
 ; false
 ; user=> (error? nil)
 ; false
-;; (defn error?
-;;   "Devuelve true o false, segun sea o no el arg. un mensaje de error (una lista con *error* como primer elemento)."
-;; )
+(defn error?
+  "Devuelve true o false, segun sea o no el arg. un mensaje de error (una lista con *error* como primer elemento)."
+  [l]
+  (and (list? l) (= "error" (first l)))
+)
 
 
 ; user=> (revisar-fnc '(*error* too-few-args))
@@ -460,9 +482,13 @@
 ; nil
 ; user=> (revisar-fnc ())
 ; nil
-;; (defn revisar-fnc
-;;   "Si la lista es un mensaje de error, lo devuelve; si no, devuelve nil."
-;; )
+(defn revisar-fnc
+  "Si la lista es un mensaje de error, lo devuelve; si no, devuelve nil."
+  [l]
+  (if (error? l)
+    l
+  )
+)
 
 
 ; user=> (revisar-lae '(1 2 3))
@@ -498,10 +524,17 @@
 ; 3
 ; user=> (buscar 'f '(a 1 b 2 c 3 d 4 e 5))
 ; (*error* unbound-symbol f)
-;; (defn buscar
-;;   "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
-;;    y devuelve el valor asociado. Devuelve un mensaje de error si no la encuentra."
-;; )
+(defn buscar
+  "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
+   y devuelve el valor asociado. Devuelve un mensaje de error si no la encuentra."
+   [clave ambiente]
+   (let [res (ffirst (filter (fn [x] (= (first x) clave)) (partition 2 ambiente)))]
+    (if res
+      res
+      "error"
+    )
+   )
+)
 
 ; user=> (fnc-append '( (1 2) ))
 ; (*error* too-few-args)
@@ -739,9 +772,13 @@
 ; (5 (v 1 w 3 x 6))
 ; user=> (evaluar-escalar 'n '(v 1 w 3 x 6) '(x 5 y 11 z "hola"))
 ; ((*error* unbound-symbol n) (v 1 w 3 x 6))
-;; (defn evaluar-escalar
-;;   "Evalua una expresion escalar consultando, si corresponde, los ambientes local y global. Devuelve una lista con el resultado y un ambiente."
-;; )
+(defn evaluar-escalar
+  "Evalua una expresion escalar consultando, si corresponde, los ambientes local y global. Devuelve una lista con el resultado y un ambiente."
+  [escalar local global]
+  (if symbol? escalar)
+    (list (buscar escalar local) local)
+    (list escalar local)
+)
 
 
 ; user=> (evaluar-de '(de f (x)) '(x 1))
