@@ -43,12 +43,12 @@
   )
 )
 
-;; (deftest revisar-fnc-test
-;;   (testing "Funcion revisar-fnc"
-;;     (is ((= '(*error* too-few-args) (revisar-fnc '(*error* too-few-args)))))
-;;     ;; (is ((= nil (revisar-fnc '(too-few-args)))))
-;;     ;; (is ((= nil (revisar-fnc '*error*))))
-;;     ;; (is ((= nil (revisar-fnc nil))))
-;;     ;; (is ((= nil (revisar-fnc ()))))
-;;   )
-;; )
+(deftest revisar-fnc-test
+  (testing "Funcion revisar-fnc"
+    (is (= (revisar-fnc '(*error* too-few-args)) '(*error* too-few-args)))
+    (is (= (revisar-fnc '(too-few-args)) nil))
+    (is (= (revisar-fnc '*error*) nil))
+    (is (= (revisar-fnc nil) nil))
+    (is (= (revisar-fnc ()) nil))
+  )
+)
