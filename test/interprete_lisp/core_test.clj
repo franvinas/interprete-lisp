@@ -29,19 +29,19 @@
   )  
 )
 
-;; (deftest error-test
-;;   (testing "Funcion error"
-;;     (is (true? (error? '(*error* too-few-args))))
-;;     (is (true? (error? (list '*error* 'too-few-args))))
-;;     (is (true? (error? (list '*ERROR* 'too-few-args))))
-;;     (is (true? (error? (list '*Error* 'too-few-args))))
-;;     (is (true? (error? (list '*error*))))
-;;     (is (false? (error? (list 'too-few-args))))
-;;     (is (false? (error? '*error*)))
-;;     (is (false? (error? ())))
-;;     (is (false? (error? nil)))
-;;   )
-;; )
+(deftest error-test
+  (testing "Funcion error"
+    (is (true? (error? '(*error* too-few-args))))
+    (is (true? (error? (list '*error* 'too-few-args))))
+    (is (true? (error? (list '*ERROR* 'too-few-args))))
+    (is (true? (error? (list '*Error* 'too-few-args))))
+    (is (true? (error? (list '*error*))))
+    (is (false? (error? (list 'too-few-args))))
+    (is (false? (error? '*error*)))
+    (is (false? (error? ())))
+    (is (false? (error? nil)))
+  )
+)
 
 ;; (deftest revisar-fnc-test
 ;;   (testing "Funcion revisar-fnc"

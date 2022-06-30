@@ -441,8 +441,9 @@
 ; false
 ; user=> (igual? 'a "A")
 ; false
-(defn igual? [a b]
+(defn igual?
   "Verifica la igualdad entre dos elementos al estilo de TLC-LISP (case-insensitive)."
+  [a b]
   (= (upper a) (upper b))
 )
 
@@ -468,7 +469,7 @@
 (defn error?
   "Devuelve true o false, segun sea o no el arg. un mensaje de error (una lista con *error* como primer elemento)."
   [l]
-  (and (list? l) (= "error" (first l)))
+  (and (list? l) (= '*ERROR* (upper (first l))))
 )
 
 
