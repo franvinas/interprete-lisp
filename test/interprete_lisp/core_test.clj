@@ -63,11 +63,11 @@
   )
 )
 
-; user=> (actualizar-amb '(a 1 b 2 c 3) 'd 4)
-; (a 1 b 2 c 3 d 4)
-; user=> (actualizar-amb '(a 1 b 2 c 3) 'b 4)
-; (a 1 b 4 c 3)
-; user=> (actualizar-amb '(a 1 b 2 c 3) 'b (list '*error* 'mal 'hecho))
-; (a 1 b 2 c 3)
-; user=> (actualizar-amb () 'b 7)
-; (b 7)
+(deftest actualizar-amb-test
+  (testing "Funcion actualizar-amb"
+    (is (= (actualizar-amb '(a 1 b 2 c 3) 'd 4) '(a 1 b 2 c 3 d 4)))
+    (is (= (actualizar-amb '(a 1 b 2 c 3) 'b 4) '(a 1 b 4 c 3)))
+    (is (= (actualizar-amb '(a 1 b 2 c 3) 'b (list '*error* 'mal 'hecho)) '(a 1 b 2 c 3)))
+    (is (= (actualizar-amb () 'b 7) '(b 7)))
+  )
+)

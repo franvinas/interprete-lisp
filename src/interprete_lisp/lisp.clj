@@ -519,10 +519,18 @@
 ; (a 1 b 2 c 3)
 ; user=> (actualizar-amb () 'b 7)
 ; (b 7)
-;; (defn actualizar-amb
-;;   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
-;;   Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza el valor."
-;; )
+(defn actualizar-amb
+  "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
+  Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza el valor."
+  [ambiente clave valor]
+  (if (not (error? valor))
+    (if (error? (buscar clave ambiente))
+      (concat ambiente (list clave valor))
+      (flatten (map (fn [x] (if (= (first x) clave) (list clave valor) x)) (partition 2 ambiente)))
+    )
+    ambiente
+  )
+)
 
 
 ; user=> (buscar 'c '(a 1 b 2 c 3 d 4 e 5))
@@ -536,7 +544,7 @@
    (let [res (ffirst (filter (fn [x] (= (first x) clave)) (partition 2 ambiente)))]
     (if res
       res
-      "error"
+      (list '*error* 'unbound-symbol clave)
     )
    )
 )
