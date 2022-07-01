@@ -625,9 +625,21 @@
 ; (*error* too-few-args)
 ; user=> (fnc-equal '(A a A))
 ; (*error* too-many-args)
-;; (defn fnc-equal
-;;   "Compara 2 elementos. Si son iguales, devuelve t. Si no, nil."
-;; )
+(defn fnc-equal
+  "Compara 2 elementos. Si son iguales, devuelve t. Si no, nil."
+  [args]
+  (cond 
+    (< (count args) 2)
+      '(*error* too-few-args)
+    (> (count args) 2)
+      '(*error* too-many-args)
+    true
+      (if (= (upper (first args)) (upper (last args)))
+        't
+        nil
+      )
+  )
+)
 
 
 ; user=> (fnc-read ())

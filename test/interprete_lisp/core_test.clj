@@ -92,3 +92,18 @@
     (is (= (fnc-env '(5) '(a 1 b 2) '(c 3 d 4)) '(*error* too-many-args)))
   )
 )
+
+(deftest fnc-equal-test
+  (testing "Funcion fnc-equal"
+    (is (= (fnc-equal '(1 1)) 't))
+    (is (= (fnc-equal '(A a)) 't))
+    (is (= (fnc-equal '("1" "1")) 't))
+    (is (= (fnc-equal '(nil NIL)) 't))
+    (is (= (fnc-equal '(1 2)) 'nil))
+    (is (= (fnc-equal '(A B)) 'nil))
+    (is (= (fnc-equal '("1" 1)) 'nil))
+    (is (= (fnc-equal ()) '(*error* too-few-args)))
+    (is (= (fnc-equal '(A)) '(*error* too-few-args)))
+    (is (= (fnc-equal '(A a A)) '(*error* too-many-args)))
+  )
+)
