@@ -746,9 +746,20 @@
 ; (*error* number-expected A)
 ; user=> (fnc-sub '(3 4 A 6))
 ; (*error* number-expected A)
-;; (defn fnc-sub
-;;   "Resta los elementos de un lista. Minimo 1 elemento."
-;; )
+(defn fnc-sub
+  "Resta los elementos de un lista. Minimo 1 elemento."
+  [args]
+  (cond 
+    (< (count args) 1)
+      '(*error* too-few-args)
+    (not-every? number? args)
+      (list '*error* 'number-expected (first (filter (fn [x] (not (number? x))) args)))
+    (= (count args) 1)
+      (- (first args))
+    true
+      (reduce - args)
+  )
+)
 
 
 ; user=> (fnc-lt ())

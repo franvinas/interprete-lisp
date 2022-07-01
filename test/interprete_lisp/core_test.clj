@@ -120,3 +120,16 @@
     (is (= (fnc-add '(3 4 A 6)) '(*error* number-expected A)))
   )
 )
+
+(deftest fnc-sub-test
+  (testing "Funcion fnc-sub"
+    (is (= (fnc-sub ()) '(*error* too-few-args)))
+    (is (= (fnc-sub '(3)) '-3))
+    (is (= (fnc-sub '(3 4)) '-1))
+    (is (= (fnc-sub '(3 4 5)) '-6))
+    (is (= (fnc-sub '(3 4 5 6)) '-12))
+    (is (= (fnc-sub '(A 4 5 6)) '(*error* number-expected A)))
+    (is (= (fnc-sub '(3 A 5 6)) '(*error* number-expected A)))
+    (is (= (fnc-sub '(3 4 A 6)) '(*error* number-expected A)))
+  )
+)
