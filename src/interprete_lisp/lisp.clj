@@ -690,9 +690,14 @@
 ; (*error* not-implemented)
 ; user=> (fnc-terpri '(1 2))
 ; (*error* not-implemented)
-;; (defn fnc-terpri
-;;   "Imprime un salto de línea y devuelve nil."
-;; ) 
+(defn fnc-terpri
+  "Imprime un salto de línea y devuelve nil."
+  [args]
+  (if (> (count args) 0)
+    '(*error* not-implemented)
+    (println)
+  )
+) 
 
 
 ; user=> (fnc-add ())
