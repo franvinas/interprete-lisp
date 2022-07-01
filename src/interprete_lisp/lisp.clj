@@ -595,9 +595,14 @@
 ; (a 1 b 2 c 3 d 4)
 ; user=> (fnc-env '(5) '(a 1 b 2) '(c 3 d 4))
 ; (*error* too-many-args)
-;; (defn fnc-env
-;;   "Devuelve la fusion de los ambientes global y local."
-;; )
+(defn fnc-env
+  "Devuelve la fusion de los ambientes global y local."
+  [a b c]
+  (if (> (count a) 0)
+    '(*error* too-many-args)
+    (concat b c)
+  )
+)
 
 
 ; user=> (fnc-equal '(1 1))

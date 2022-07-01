@@ -85,3 +85,10 @@
     (is (= (fnc-append '(() ())) nil))
   )
 )
+
+(deftest fnc-env-test
+  (testing "Funcion fnc-env"
+    (is (= (fnc-env () '(a 1 b 2) '(c 3 d 4)) '(a 1 b 2 c 3 d 4)))
+    (is (= (fnc-env '(5) '(a 1 b 2) '(c 3 d 4)) '(*error* too-many-args)))
+  )
+)
