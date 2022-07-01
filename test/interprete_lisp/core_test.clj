@@ -71,3 +71,17 @@
     (is (= (actualizar-amb () 'b 7) '(b 7)))
   )
 )
+
+(deftest fnc-append-test
+  (testing "Funcion fnc-append"
+    (is (= (fnc-append '( (1 2) )) '(*error* too-few-args)))
+    (is (= (fnc-append '( (1 2) (3) (4 5) (6 7) )) '(*error* too-many-args)))
+    (is (= (fnc-append '( (1 2) 3 )) '(*error* list expected 3)))
+    (is (= (fnc-append '( (1 2) A )) '(*error* list expected A)))
+    (is (= (fnc-append '( (1 2) (3))) '(1 2 3)))
+    (is (= (fnc-append '( (1 2) nil )) '(1 2)))
+    (is (= (fnc-append '( () (1 2) )) '(1 2)))
+    (is (= (fnc-append '(nil nil)) nil))
+    (is (= (fnc-append '(() ())) nil))
+  )
+)

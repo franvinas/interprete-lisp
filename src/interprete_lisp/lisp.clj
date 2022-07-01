@@ -567,9 +567,28 @@
 ; nil
 ; user=> (fnc-append '(() ()))
 ; nil
-;; (defn fnc-append
-;;   "Devuelve el resultado de fusionar 2 sublistas."
-;; )
+(defn fnc-append
+  "Devuelve el resultado de fusionar 2 sublistas."
+  [lista]
+  (cond 
+    (< (count lista) 2)
+      '(*error* too-few-args)
+    (> (count lista) 2)
+      '(*error* too-many-args)
+    (not (first lista))
+      nil
+    (not (list? (first lista)))
+      (list '*error* 'list 'expected (first lista))
+    (not (last lista))
+      (first lista)
+    (not (list? (last lista)))
+      (list '*error* 'list 'expected (last lista))
+    (= (count (flatten lista)) 0)
+      nil
+    true
+      (flatten lista)
+  )
+)
 
 
 ; user=> (fnc-env () '(a 1 b 2) '(c 3 d 4))
