@@ -668,9 +668,19 @@
 ; (*error* not-implemented)
 ; user=> (fnc-read '(1 2))
 ; (*error* not-implemented)
-;; (defn fnc-read
-;;   "Devuelve la lectura de un elemento de TLC-LISP desde la terminal/consola."
-;; )
+(defn fnc-read
+  "Devuelve la lectura de un elemento de TLC-LISP desde la terminal/consola."
+  [args]
+  (if (> (count args) 0)
+    '(*error* not-implemented)
+    (let [n (read)]
+      (if (= n '())
+        nil
+        n
+      )
+    )
+  )
+)
 
 
 ; user=> (fnc-terpri ())
