@@ -107,3 +107,16 @@
     (is (= (fnc-equal '(A a A)) '(*error* too-many-args)))
   )
 )
+
+(deftest fnc-add-test
+  (testing "Funcion fnc-add"
+    (is (= (fnc-add ()) '(*error* too-few-args)))
+    (is (= (fnc-add '(3)) '(*error* too-few-args)))
+    (is (= (fnc-add '(3 4))  '7))
+    (is (= (fnc-add '(3 4 5)) '12))
+    (is (= (fnc-add '(3 4 5 6)) '18))
+    (is (= (fnc-add '(A 4 5 6)) '(*error* number-expected A)))
+    (is (= (fnc-add '(3 A 5 6)) '(*error* number-expected A)))
+    (is (= (fnc-add '(3 4 A 6)) '(*error* number-expected A)))
+  )
+)
