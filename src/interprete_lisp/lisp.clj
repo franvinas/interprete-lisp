@@ -604,6 +604,14 @@
   )
 )
 
+(defn bool
+  [a]
+  (if a
+    't
+    nil
+  )
+)
+
 
 ; user=> (fnc-equal '(1 1))
 ; t
@@ -634,10 +642,7 @@
     (> (count args) 2)
       '(*error* too-many-args)
     true
-      (if (= (upper (first args)) (upper (last args)))
-        't
-        nil
-      )
+      (bool (= (upper (first args)) (upper (last args))))
   )
 )
 
@@ -778,9 +783,20 @@
 ; (*error* number-expected A)
 ; user=> (fnc-lt '(1 2 3))
 ; (*error* too-many-args)
-;; (defn fnc-lt
-;;     "Devuelve t si el primer numero es menor que el segundo; si no, nil."
-;; )
+(defn fnc-lt
+    "Devuelve t si el primer numero es menor que el segundo; si no, nil."
+    [args]
+  (cond 
+    (< (count args) 2)
+      '(*error* too-few-args)
+    (> (count args) 2)
+      '(*error* too-many-args)
+    (not-every? number? args)
+      (list '*error* 'number-expected (first (filter (fn [x] (not (number? x))) args)))
+    true
+      (bool (< (first args) (last args)))
+  )
+)
 
 
 ; user=> (fnc-gt ())

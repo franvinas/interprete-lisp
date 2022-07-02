@@ -133,3 +133,16 @@
     (is (= (fnc-sub '(3 4 A 6)) '(*error* number-expected A)))
   )
 )
+
+(deftest fnc-lt-test
+  (testing "Funcion fnc-lt"
+    (is (= (fnc-lt ()) '(*error* too-few-args)))
+    (is (= (fnc-lt '(1)) '(*error* too-few-args)))
+    (is (= (fnc-lt '(1 2)) 't))
+    (is (= (fnc-lt '(1 1)) 'nil))
+    (is (= (fnc-lt '(2 1)) 'nil))
+    (is (= (fnc-lt '(A 1)) '(*error* number-expected A)))
+    (is (= (fnc-lt '(1 A)) '(*error* number-expected A)))
+    (is (= (fnc-lt '(1 2 3)) '(*error* too-many-args)))
+  )
+)
