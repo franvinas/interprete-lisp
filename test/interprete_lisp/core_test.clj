@@ -146,3 +146,16 @@
     (is (= (fnc-lt '(1 2 3)) '(*error* too-many-args)))
   )
 )
+
+(deftest fnc-gt-test
+  (testing "Funcion fnc-gt"
+    (is (= (fnc-gt ()) '(*error* too-few-args)))
+    (is (= (fnc-gt '(1)) '(*error* too-few-args)))
+    (is (= (fnc-gt '(2 1)) 't))
+    (is (= (fnc-gt '(1 1)) nil))
+    (is (= (fnc-gt '(1 2)) nil))
+    (is (= (fnc-gt '(A 1)) '(*error* number-expected A)))
+    (is (= (fnc-gt '(1 A)) '(*error* number-expected A)))
+    (is (= (fnc-gt '(1 2 3)) '(*error* too-many-args)))
+  )
+)
