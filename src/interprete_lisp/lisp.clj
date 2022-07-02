@@ -875,9 +875,20 @@
 ; (3 2 1)
 ; user=> (fnc-reverse '((1 2 3)(4)) )
 ; (*error* too-many-args)
-;; (defn fnc-reverse
-;;   "Devuelve una lista con sus elementos en orden inverso."
-;; )						
+(defn fnc-reverse
+  "Devuelve una lista con sus elementos en orden inverso."
+  [args]
+  (cond 
+    (< (count args) 1)
+      '(*error* too-few-args)
+    (> (count args) 1)
+      '(*error* too-many-args)
+    (not (list? (first args)))
+      (list '*error* 'list 'expected (first args))
+    true
+      (reverse (first args))
+  )
+)
 
 
 ; user=> (evaluar-escalar 32 '(v 1 w 3 x 6) '(x 5 y 11 z "hola"))
