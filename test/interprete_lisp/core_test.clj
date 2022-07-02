@@ -202,3 +202,21 @@
     (is (= (buscar 'f '(a 1 b 2 c 3 d 4 e 5)) '(*error* unbound-symbol f)))
   )
 )
+
+(deftest evaluar-de-test
+  (testing "Funcion evaluar-de"
+    (is (= (evaluar-de '(de f (x)) '(x 1)) '(f (x 1 f (lambda (x))))))
+    (is (= (evaluar-de '(de f (x) 2) '(x 1)) '(f (x 1 f (lambda (x) 2)))))
+    (is (= (evaluar-de '(de f (x) (+ x 1)) '(x 1)) '(f (x 1 f (lambda (x) (+ x 1))))))
+    (is (= (evaluar-de '(de f (x y) (+ x y)) '(x 1)) '(f (x 1 f (lambda (x y) (+ x y))))))
+    (is (= (evaluar-de '(de f (x y) (prin3 x) (terpri) y) '(x 1)) '(f (x 1 f (lambda (x y) (prin3 x) (terpri) y)))))
+    (is (= (evaluar-de '(de) '(x 1)) '((*error* list expected nil) (x 1))))
+    (is (= (evaluar-de '(de f) '(x 1)) '((*error* list expected nil) (x 1))))
+    (is (= (evaluar-de '(de f 2) '(x 1)) '((*error* list expected 2) (x 1))))
+    (is (= (evaluar-de '(de f 2 3) '(x 1)) '((*error* list expected 2) (x 1))))
+    (is (= (evaluar-de '(de (f)) '(x 1)) '((*error* list expected nil) (x 1))))
+    (is (= (evaluar-de '(de 2 x) '(x 1)) '((*error* list expected x) (x 1))))
+    (is (= (evaluar-de '(de 2 (x)) '(x 1)) '((*error* symbol expected 2) (x 1))))
+    (is (= (evaluar-de '(de nil (x) 2) '(x 1)) '((*error* cannot-set nil) (x 1))))
+  )
+)

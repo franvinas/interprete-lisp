@@ -951,9 +951,22 @@
 ; ((*error* symbol expected 2) (x 1))
 ; user=> (evaluar-de '(de nil (x) 2) '(x 1))
 ; ((*error* cannot-set nil) (x 1))
-;; (defn evaluar-de
-;;   "Evalua una forma 'de'. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
-;; )
+(defn evaluar-de
+  "Evalua una forma 'de'. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
+  [de ambiente]
+  (cond
+    (empty? (drop 2 de))
+      (list (list '*error* 'list 'expected nil) ambiente)
+    (not (list? (first (drop 2 de))))
+      (list (list '*error* 'list 'expected (first (drop 2 de))) ambiente)
+    (not (second de))
+      (list (list '*error* 'cannot-set nil) ambiente)
+    (not (symbol? (second de)))
+      (list (list '*error* 'symbol 'expected (second de)) ambiente)
+    true
+      (list (second de) (concat ambiente (list (second de) (concat (list 'lambda) (drop 2 de)))))
+  )
+)
 
 
 ; user=> (evaluar-if '(if t) '(nil nil t t v 1 w 3 x 6) '(x 5 y 11 z "hola"))
