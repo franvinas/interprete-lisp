@@ -541,7 +541,7 @@
   "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
    y devuelve el valor asociado. Devuelve un mensaje de error si no la encuentra."
    [clave ambiente]
-   (let [res (ffirst (filter (fn [x] (= (first x) clave)) (partition 2 ambiente)))]
+   (let [res (last (first (filter (fn [x] (= (upper (first x)) (upper clave))) (partition 2 ambiente))))]
     (if res
       res
       (list '*error* 'unbound-symbol clave)
@@ -908,9 +908,20 @@
 (defn evaluar-escalar
   "Evalua una expresion escalar consultando, si corresponde, los ambientes local y global. Devuelve una lista con el resultado y un ambiente."
   [escalar local global]
-  (if symbol? escalar)
-    (list (buscar escalar local) local)
+  (if (symbol? escalar)
+    (let [busqueda-global (buscar escalar global)]
+      (if (not (error? busqueda-global))
+        (list busqueda-global local)
+        (let [busqueda-local (buscar escalar local)]
+          (if (not (error? busqueda-local))
+            (list busqueda-local local)
+            (list (list '*error* 'unbound-symbol escalar) local)
+          )
+        )
+      )
+    )
     (list escalar local)
+  )
 )
 
 
