@@ -159,3 +159,16 @@
     (is (= (fnc-gt '(1 2 3)) '(*error* too-many-args)))
   )
 )
+
+(deftest fnc-ge-test
+  (testing "Funcion fnc-ge"
+    (is (= (fnc-ge ()) '(*error* too-few-args)))
+    (is (= (fnc-ge '(1)) '(*error* too-few-args)))
+    (is (= (fnc-ge '(2 1)) 't))
+    (is (= (fnc-ge '(1 1)) 't))
+    (is (= (fnc-ge '(1 2)) nil))
+    (is (= (fnc-ge '(A 1)) '(*error* number-expected A)))
+    (is (= (fnc-ge '(1 A)) '(*error* number-expected A)))
+    (is (= (fnc-ge '(1 2 3)) '(*error* too-many-args)))
+  )
+)

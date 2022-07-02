@@ -847,9 +847,20 @@
 ; (*error* number-expected A)
 ; user=> (fnc-ge '(1 2 3))
 ; (*error* too-many-args)
-;; (defn fnc-ge
-;;     "Devuelve t si el primer numero es mayor o igual que el segundo; si no, nil."
-;; )
+(defn fnc-ge
+  "Devuelve t si el primer numero es mayor o igual que el segundo; si no, nil."
+  [args]
+  (cond 
+    (< (count args) 2)
+      '(*error* too-few-args)
+    (> (count args) 2)
+      '(*error* too-many-args)
+    (not-every? number? args)
+      (list '*error* 'number-expected (first (filter (fn [x] (not (number? x))) args)))
+    true
+      (bool (>= (first args) (last args)))
+  )
+)
 
 
 ; user=> (fnc-reverse ())
