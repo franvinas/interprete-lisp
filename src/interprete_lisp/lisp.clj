@@ -712,14 +712,12 @@
 (defn fnc-read
   "Devuelve la lectura de un elemento de TLC-LISP desde la terminal/consola."
   [args]
-  (let [aridad (controlar-aridad args 0)]
-    (if (error? aridad)
-      aridad
-      (let [n (read)]
-        (if (= n '())
-          nil
-          n
-        )
+  (if (not (empty? args))
+    '(*error* not-implemented)
+    (let [n (read)]
+      (if (= n '())
+        nil
+        n
       )
     )
   )

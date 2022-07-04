@@ -124,6 +124,20 @@
   )
 )
 
+(deftest fnc-read-test
+  (testing "Funcion fnc-read"
+    (is (= (with-in-str "1" (fnc-read ())) 1))
+    (is (= (with-in-str "a" (fnc-read ())) 'a))
+    (is (= (with-in-str "hola" (fnc-read ())) 'hola))
+    ;; (is (= "(hola mundo)" (with-in-str (fnc-read ())) '(hola mundo)))
+    ;; (is (= "(hola\n mundo)" (with-in-str (fnc-read ())) '(hola mundo)))
+    (is (= (with-in-str "()" (fnc-read ())) nil))
+    (is (= (with-in-str "nil" (fnc-read ())) nil))
+    (is (= (fnc-read '(1)) '(*error* not-implemented)))
+    (is (= (fnc-read '(1 2)) '(*error* not-implemented)))
+  )
+)
+
 (deftest fnc-add-test
   (testing "Funcion fnc-add"
     (is (= (fnc-add ()) '(*error* too-few-args)))
