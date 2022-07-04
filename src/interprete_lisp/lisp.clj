@@ -111,16 +111,16 @@
 
         (igual? (first expre) 'cond)                (evaluar-cond expre amb-global amb-local)
         (igual? (first expre) 'de)                  (evaluar-de expre amb-global)
-        (igual? (first expre) 'clausulas-en-cond)   (evaluar-clausulas-en-cond expre amb-global)
-        (igual? (first expre) 'secuencia-en-cond)   (evaluar-secuencia-en-cond expre amb-global)
-        (igual? (first expre) 'eval)                (evaluar-eval expre amb-global)
-        (igual? (first expre) 'exit)                (evaluar-exit expre amb-global)
-        (igual? (first expre) 'lambda)              (evaluar-lambda expre amb-global)
-        (igual? (first expre) 'load)                (evaluar-load expre amb-global)
-        (igual? (first expre) 'quote)               (evaluar-quote expre amb-global)
-        (igual? (first expre) 'if)                  (evaluar-if expre amb-global)
-        (igual? (first expre) 'or)                  (evaluar-or expre amb-global)
-        (igual? (first expre) 'setq)                (evaluar-setq expre amb-global)
+        (igual? (first expre) 'clausulas-en-cond)   (evaluar-clausulas-en-cond expre amb-global amb-local)
+        (igual? (first expre) 'secuencia-en-cond)   (evaluar-secuencia-en-cond expre amb-global amb-local)
+        (igual? (first expre) 'eval)                (evaluar-eval expre amb-global amb-local)
+        (igual? (first expre) 'exit)                (evaluar-exit expre amb-global amb-local)
+        (igual? (first expre) 'lambda)              (evaluar-lambda expre amb-global amb-local)
+        (igual? (first expre) 'load)                (evaluar-load expre amb-global amb-local)
+        (igual? (first expre) 'quote)               (evaluar-quote expre amb-global amb-local)
+        (igual? (first expre) 'if)                  (evaluar-if expre amb-global amb-local)
+        (igual? (first expre) 'or)                  (evaluar-or expre amb-global amb-local)
+        (igual? (first expre) 'setq)                (evaluar-setq expre amb-global amb-local)
 
          ;
          ;
@@ -675,10 +675,9 @@
   "Compara 2 elementos. Si son iguales, devuelve t. Si no, nil."
   [args]
   (let [aridad (controlar-aridad args 2)]
-    (if 
-      (error? aridad)
-        aridad
-        (bool (= (upper (first args)) (upper (last args))))
+    (if (error? aridad)
+      aridad
+      (bool (igual? (first args) (last args)))
     )
   )
 )
