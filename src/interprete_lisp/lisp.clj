@@ -712,7 +712,7 @@
 (defn fnc-read
   "Devuelve la lectura de un elemento de TLC-LISP desde la terminal/consola."
   [args]
-  (if (not (empty? args))
+  (if (> (count args))
     '(*error* not-implemented)
     (let [n (read)]
       (if (= n '())
@@ -734,7 +734,7 @@
 (defn fnc-terpri
   "Imprime un salto de línea y devuelve nil."
   [args]
-  (if (not (empty args))
+  (if (> (count args) 0)
     '(*error* not-implemented)
     (println)
   )

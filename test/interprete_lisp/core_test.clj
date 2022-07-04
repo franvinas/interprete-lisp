@@ -138,6 +138,15 @@
   )
 )
 
+(deftest fnc-terpri-test
+  (testing "Funcion fnc-terpri"
+    (is (= (fnc-terpri ()) nil))
+    (is (= (with-out-str (fnc-terpri ())) "\n"))
+    (is (= (fnc-terpri '(1)) '(*error* not-implemented)))
+    (is (= (fnc-terpri '(1 2)) '(*error* not-implemented)))
+  )
+)
+
 (deftest fnc-add-test
   (testing "Funcion fnc-add"
     (is (= (fnc-add ()) '(*error* too-few-args)))
