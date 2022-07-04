@@ -81,6 +81,13 @@
   )
 )
 
+(deftest buscar-test
+  (testing "Funcion buscar"
+    (is (= (buscar 'c '(a 1 b 2 c 3 d 4 e 5)) 3))
+    (is (= (buscar 'f '(a 1 b 2 c 3 d 4 e 5)) '(*error* unbound-symbol f)))
+  )
+)
+
 (deftest fnc-append-test
   (testing "Funcion fnc-append"
     (is (= (fnc-append '( (1 2) )) '(*error* too-few-args)))
@@ -202,13 +209,6 @@
     (is (= (evaluar-escalar 'w '(v 1 w 3 x 6) '(x 5 y 11 z "hola")) '(3 (v 1 w 3 x 6))))
     (is (= (evaluar-escalar 'x '(v 1 w 3 x 6) '(x 5 y 11 z "hola")) '(5 (v 1 w 3 x 6))))
     (is (= (evaluar-escalar 'n '(v 1 w 3 x 6) '(x 5 y 11 z "hola")) '((*error* unbound-symbol n) (v 1 w 3 x 6))))
-  )
-)
-
-(deftest buscar-test
-  (testing "Funcion buscar"
-    (is (= (buscar 'c '(a 1 b 2 c 3 d 4 e 5)) 3))
-    (is (= (buscar 'f '(a 1 b 2 c 3 d 4 e 5)) '(*error* unbound-symbol f)))
   )
 )
 

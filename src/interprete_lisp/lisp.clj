@@ -605,24 +605,24 @@
 ; nil
 (defn fnc-append
   "Devuelve el resultado de fusionar 2 sublistas."
-  [lista]
-  (cond 
-    (< (count lista) 2)
-      '(*error* too-few-args)
-    (> (count lista) 2)
-      '(*error* too-many-args)
-    (not (first lista))
-      nil
-    (not (list? (first lista)))
-      (list '*error* 'list 'expected (first lista))
-    (not (last lista))
-      (first lista)
-    (not (list? (last lista)))
-      (list '*error* 'list 'expected (last lista))
-    (= (count (flatten lista)) 0)
-      nil
-    true
-      (flatten lista)
+  [args]
+  (let [aridad (controlar-aridad args 2)]
+    (cond 
+      (error? aridad)
+        aridad
+      (not (first args))
+        nil
+      (not (list? (first args)))
+        (list '*error* 'list 'expected (first args))
+      (not (last args))
+        (first args)
+      (not (list? (last args)))
+        (list '*error* 'list 'expected (last args))
+      (= (count (flatten args)) 0)
+        nil
+      true
+        (flatten args)
+    )
   )
 )
 
@@ -633,10 +633,12 @@
 ; (*error* too-many-args)
 (defn fnc-env
   "Devuelve la fusion de los ambientes global y local."
-  [a b c]
-  (if (> (count a) 0)
-    '(*error* too-many-args)
-    (concat b c)
+  [args amb-global amb-local]
+  (let [aridad (controlar-aridad args 0)]
+    (if (error? aridad)
+      aridad
+      (concat amb-global amb-local)
+    )
   )
 )
 
@@ -672,13 +674,12 @@
 (defn fnc-equal
   "Compara 2 elementos. Si son iguales, devuelve t. Si no, nil."
   [args]
-  (cond 
-    (< (count args) 2)
-      '(*error* too-few-args)
-    (> (count args) 2)
-      '(*error* too-many-args)
-    true
-      (bool (= (upper (first args)) (upper (last args))))
+  (let [aridad (controlar-aridad args 2)]
+    (if 
+      (error? aridad)
+        aridad
+        (bool (= (upper (first args)) (upper (last args))))
+    )
   )
 )
 
@@ -712,12 +713,14 @@
 (defn fnc-read
   "Devuelve la lectura de un elemento de TLC-LISP desde la terminal/consola."
   [args]
-  (if (> (count args) 0)
-    '(*error* not-implemented)
-    (let [n (read)]
-      (if (= n '())
-        nil
-        n
+  (let [aridad (controlar-aridad args 0)]
+    (if (error? aridad)
+      aridad
+      (let [n (read)]
+        (if (= n '())
+          nil
+          n
+        )
       )
     )
   )
@@ -734,7 +737,7 @@
 (defn fnc-terpri
   "Imprime un salto de línea y devuelve nil."
   [args]
-  (if (> (count args) 0)
+  (if (not (empty args))
     '(*error* not-implemented)
     (println)
   )
