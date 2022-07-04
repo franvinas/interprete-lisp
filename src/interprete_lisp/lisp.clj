@@ -404,10 +404,16 @@
 ; (*error* too-many-args)
 ; user=> (controlar-aridad '(a b c) 4)
 ; (*error* too-few-args)
-;; (defn controlar-aridad
-;;   "Si la longitud de una lista dada es la esperada, devuelve esa longitud.
-;;    Si no, devuelve una lista con un mensaje de error (una lista con *error* como primer elemento)."
-;; )
+(defn controlar-aridad
+  "Si la longitud de una lista dada es la esperada, devuelve esa longitud.
+   Si no, devuelve una lista con un mensaje de error (una lista con *error* como primer elemento)."
+  [lista longitud]
+  (cond 
+    (= (count lista) longitud) longitud
+    (> (count lista) longitud) '(*error* too-many-args)
+    :else '(*error* too-few-args)
+  )
+)
 
 (defn upper [a]
   (if (seq? a)
