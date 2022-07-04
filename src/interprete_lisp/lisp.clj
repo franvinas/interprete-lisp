@@ -109,8 +109,18 @@
       (cond
         (not (seq? expre))             (evaluar-escalar expre amb-global amb-local)
 
-        (igual? (first expre) 'cond)   (evaluar-cond expre amb-global amb-local)
-        (igual? (first expre) 'de)     (evaluar-de expre amb-global)
+        (igual? (first expre) 'cond)                (evaluar-cond expre amb-global amb-local)
+        (igual? (first expre) 'de)                  (evaluar-de expre amb-global)
+        (igual? (first expre) 'clausulas-en-cond)   (evaluar-clausulas-en-cond expre amb-global)
+        (igual? (first expre) 'secuencia-en-cond)   (evaluar-secuencia-en-cond expre amb-global)
+        (igual? (first expre) 'eval)                (evaluar-eval expre amb-global)
+        (igual? (first expre) 'exit)                (evaluar-exit expre amb-global)
+        (igual? (first expre) 'lambda)              (evaluar-lambda expre amb-global)
+        (igual? (first expre) 'load)                (evaluar-load expre amb-global)
+        (igual? (first expre) 'quote)               (evaluar-quote expre amb-global)
+        (igual? (first expre) 'if)                  (evaluar-if expre amb-global)
+        (igual? (first expre) 'or)                  (evaluar-or expre amb-global)
+        (igual? (first expre) 'setq)                (evaluar-setq expre amb-global)
 
          ;
          ;
@@ -259,7 +269,27 @@
   "Aplica una funcion primitiva a una 'lae' (lista de argumentos evaluados)."
   [fnc lae amb-global amb-local]
   (cond
-    (igual? fnc 'add)     (fnc-add lae)
+    (igual? fnc 'add)       (fnc-add lae)
+    (igual? fnc 'ge)        (fnc-ge lae)
+    (igual? fnc 'gt)        (fnc-gt lae)
+    (igual? fnc 'lt)        (fnc-lt lae)
+    (igual? fnc 'add)       (fnc-add lae)
+    (igual? fnc 'env)       (fnc-env lae)
+    (igual? fnc 'not)       (fnc-not lae)
+    (igual? fnc 'sub)       (fnc-sub lae)
+    (igual? fnc 'cons)      (fnc-cons lae)
+    (igual? fnc 'list)      (fnc-list lae)
+    (igual? fnc 'null)      (fnc-null lae)
+    (igual? fnc 'read)      (fnc-read lae)
+    (igual? fnc 'rest)      (fnc-rest lae)
+    (igual? fnc 'equal)     (fnc-equal lae)
+    (igual? fnc 'first)     (fnc-first lae)
+    (igual? fnc 'listp)     (fnc-listp lae)
+    (igual? fnc 'prin3)     (fnc-prin3 lae)
+    (igual? fnc 'append)    (fnc-append lae)
+    (igual? fnc 'length)    (fnc-length lae)
+    (igual? fnc 'terpri)    (fnc-terpri lae)
+    (igual? fnc 'reverse)   (fnc-reverse lae)
 
     ; Las funciones primitivas reciben argumentos y retornan un valor (son puras)
 
@@ -907,20 +937,20 @@
 ; ((*error* unbound-symbol n) (v 1 w 3 x 6))
 (defn evaluar-escalar
   "Evalua una expresion escalar consultando, si corresponde, los ambientes local y global. Devuelve una lista con el resultado y un ambiente."
-  [escalar local global]
+  [escalar amb-global amb-local]
   (if (symbol? escalar)
-    (let [busqueda-global (buscar escalar global)]
-      (if (not (error? busqueda-global))
-        (list busqueda-global local)
-        (let [busqueda-local (buscar escalar local)]
-          (if (not (error? busqueda-local))
-            (list busqueda-local local)
-            (list (list '*error* 'unbound-symbol escalar) local)
+    (let [busqueda-local (buscar escalar amb-local)]
+      (if (not (error? busqueda-local))
+        (list busqueda-local amb-global)
+        (let [busqueda-global (buscar escalar amb-global)]
+          (if (not (error? busqueda-global))
+            (list busqueda-global amb-global)
+            (list (list '*error* 'unbound-symbol escalar) amb-global)
           )
         )
       )
     )
-    (list escalar local)
+    (list escalar amb-global)
   )
 )
 
@@ -1003,9 +1033,23 @@
 ; (8 (gt gt nil nil t t v 1 w 3 x 6))
 ; user=> (evaluar-if '(if (gt 0 2) a (setq m 8)) '(gt gt nil nil t t v 1 w 3 x 6) '(x 5 y 11 z "hola"))
 ; (8 (gt gt nil nil t t v 1 w 3 x 6 m 8))
-;; (defn evaluar-if
-;;   "Evalua una forma 'if'. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
-;; )
+(defn evaluar-if
+  "Evalua una forma 'if'. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
+  [args amb-global amb-local]
+  (let [res (evaluar-escalar (second args) amb-global amb-local)]
+    res
+    (cond
+      (error? res)
+        (list res amb-local)
+      (and res (> (count args) 2))
+        (list (evaluar-escalar (nth args 2) amb-global amb-local) amb-local)
+      (and (not res) (> (count args) 3))
+        (list (evaluar-escalar (last args) amb-global amb-local) amb-local)
+      true
+        (list nil amb-local)
+    )
+  )
+)
 
 
 ; user=> (evaluar-or '(or) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))
