@@ -712,7 +712,7 @@
 (defn fnc-read
   "Devuelve la lectura de un elemento de TLC-LISP desde la terminal/consola."
   [args]
-  (if (> (count args))
+  (if (> (count args) 0)
     '(*error* not-implemented)
     (let [n (read)]
       (if (= n '())
@@ -1042,17 +1042,16 @@
 (defn evaluar-if
   "Evalua una forma 'if'. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
   [args amb-global amb-local]
-  (let [res (evaluar-escalar (second args) amb-global amb-local)]
-    res
+  (let [res (first (evaluar (second args) amb-global amb-local))]
     (cond
       (error? res)
-        (list res amb-local)
+        (list res amb-global)
       (and res (> (count args) 2))
-        (list (evaluar-escalar (nth args 2) amb-global amb-local) amb-local)
+        (evaluar (nth args 2) amb-global amb-local)
       (and (not res) (> (count args) 3))
-        (list (evaluar-escalar (last args) amb-global amb-local) amb-local)
+        (evaluar (last args) amb-global amb-local)
       true
-        (list nil amb-local)
+        (list nil amb-global)
     )
   )
 )
