@@ -577,10 +577,10 @@
   "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
    y devuelve el valor asociado. Devuelve un mensaje de error si no la encuentra."
    [clave ambiente]
-   (let [res (last (first (filter (fn [x] (= (upper (first x)) (upper clave))) (partition 2 ambiente))))]
-    (if res
-      res
+   (let [res  (first (filter (fn [x] (= (upper (first x)) (upper clave))) (partition 2 ambiente)))]
+    (if (= (count res) 0)
       (list '*error* 'unbound-symbol clave)
+      (last res)
     )
    )
 )
@@ -644,9 +644,9 @@
 
 (defn bool
   [a]
-  (if a
-    't
+  (if (or (= a '()) (not a))
     nil
+    't
   )
 )
 
@@ -1083,9 +1083,20 @@
 ; (t (nil nil t t w 5 x 4))
 ; user=> (evaluar-or '(or nil nil nil nil) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))
 ; (nil (nil nil t t w 5 x 4))
-;; (defn evaluar-or
-;;   "Evalua una forma 'or'. Devuelve una lista con el resultado y un ambiente."
-;; )
+(defn evaluar-or
+  "Evalua una forma 'or'. Devuelve una lista con el resultado y un ambiente."
+  [args amb-global amb-local]
+  (if (= (count args) 1) 
+    (list nil amb-global)
+    (list 
+      (or 
+        (first (evaluar (second args) amb-global amb-local)) 
+        (first (evaluar-or (concat '(or) (drop 2 args)) amb-global amb-local))
+      )
+      amb-global
+    )
+  )
+)
 
 
 ; user=> (evaluar-setq '(setq) '(nil nil t t + add w 5 x 4) '(x 1 y nil z 3))
