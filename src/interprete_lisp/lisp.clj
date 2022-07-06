@@ -1088,12 +1088,14 @@
   [args amb-global amb-local]
   (if (= (count args) 1) 
     (list nil amb-global)
-    (list 
-      (or 
-        (first (evaluar (second args) amb-global amb-local)) 
-        (first (evaluar-or (concat '(or) (drop 2 args)) amb-global amb-local))
+    (let [evaluado (evaluar (second args) amb-global amb-local)]
+      (list 
+        (or 
+          (first evaluado)
+          (first (evaluar-or (concat '(or) (drop 2 args)) (second evaluado) amb-local))
+        )
+        (second evaluado)
       )
-      amb-global
     )
   )
 )
@@ -1125,9 +1127,26 @@
 ; ((*error* list expected nil) (nil nil t t + add w 5 x 7))
 ; user=> (evaluar-setq '(setq x 7 y 8 z 9) '(nil nil t t + add w 5 x 4) '(y nil z 3))
 ; (9 (nil nil t t + add w 5 x 7 y 8 z 9))
-;; (defn evaluar-setq
-;;   "Evalua una forma 'setq'. Devuelve una lista con el resultado y un ambiente actualizado."
-;; )
+(defn evaluar-setq
+  "Evalua una forma 'setq'. Devuelve una lista con el resultado y un ambiente actualizado."
+  [args amb-global amb-local]
+  (if (> (count args) 2)
+    (cond 
+      (not (second args))
+        (list '(*error* cannot-set nil) amb-global)
+      (not (symbol? (second args)))
+        (list (list '*error* 'symbol 'expected (second args)) amb-global)
+      :else
+        (let [evaluado (first (evaluar (nth args 2) amb-global amb-local))]
+          (if (= (count args) 3)
+            (list evaluado (actualizar-amb amb-global (second args) evaluado))
+            (evaluar-setq (drop 2 args) (actualizar-amb amb-global (second args) evaluado) amb-local)
+          )
+        )
+    )
+    (list (list '*error* 'list 'expected nil) amb-global)
+  )
+)
 
 
 ; Al terminar de cargar el archivo en el REPL de Clojure (con load-file), se debe devolver true.
