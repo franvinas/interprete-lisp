@@ -273,8 +273,7 @@
     (igual? fnc 'ge)        (fnc-ge lae)
     (igual? fnc 'gt)        (fnc-gt lae)
     (igual? fnc 'lt)        (fnc-lt lae)
-    (igual? fnc 'add)       (fnc-add lae)
-    (igual? fnc 'env)       (fnc-env lae)
+    (igual? fnc 'env)       (fnc-env lae amb-global amb-local)
     (igual? fnc 'not)       (fnc-not lae)
     (igual? fnc 'sub)       (fnc-sub lae)
     (igual? fnc 'cons)      (fnc-cons lae)
@@ -505,7 +504,7 @@
 (defn error?
   "Devuelve true o false, segun sea o no el arg. un mensaje de error (una lista con *error* como primer elemento)."
   [l]
-  (and (list? l) (= '*ERROR* (upper (first l))))
+  (and (list? l) (igual? '*error* (first l)))
 )
 
 
@@ -562,7 +561,7 @@
   (if (not (error? valor))
     (if (error? (buscar clave ambiente))
       (concat ambiente (list clave valor))
-      (flatten (map (fn [x] (if (= (first x) clave) (list clave valor) x)) (partition 2 ambiente)))
+      (reduce concat (map (fn [x] (if (igual? (first x) clave) (list clave valor) x)) (partition 2 ambiente)))
     )
     ambiente
   )
@@ -577,7 +576,7 @@
   "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
    y devuelve el valor asociado. Devuelve un mensaje de error si no la encuentra."
    [clave ambiente]
-   (let [res  (first (filter (fn [x] (= (upper (first x)) (upper clave))) (partition 2 ambiente)))]
+   (let [res  (first (filter (fn [x] (igual? (upper (first x)) (upper clave))) (partition 2 ambiente)))]
     (if (= (count res) 0)
       (list '*error* 'unbound-symbol clave)
       (last res)
@@ -1000,7 +999,7 @@
     (not (symbol? (second de)))
       (list (list '*error* 'symbol 'expected (second de)) ambiente)
     true
-      (list (second de) (concat ambiente (list (second de) (concat (list 'lambda) (drop 2 de)))))
+      (list (second de) (actualizar-amb ambiente (second de) (concat (list 'lambda) (drop 2 de))))
   )
 )
 
