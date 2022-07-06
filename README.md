@@ -1,36 +1,15 @@
-# interprete-lisp
+# Intérprete de TLC-LISP en Clojure
 
-FIXME: description
+Trabajo práctico de la materia Lenguajes Formales (75.14) realizado durante el 1er cuatrimestre del 2022.
 
-## Installation
+## Ejecución del interprete
 
-Download from http://example.com/FIXME.
+- En primer lugar, es necesario instalar [leiningen](https://leiningen.org/#install).
+- `lein run`: ejecuta el interprete
+- `lein test`: corre los tests
 
-## Usage
 
-FIXME: explanation
-
-    $ java -jar interprete-lisp-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2022 FIXME
+## Licencia
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
