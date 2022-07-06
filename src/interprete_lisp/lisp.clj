@@ -253,7 +253,12 @@
 (defn aplicar-lambda-simple
   "Evalua una forma lambda 'fnc' con un cuerpo simple."
   [fnc lae amb-global amb-local]
-  (evaluar (first (nnext fnc)) amb-global (concat (reduce concat (map list (second fnc) lae)) amb-local)))
+  (let [lista-params-args (reduce concat (map list (second fnc) lae)),
+        nuevo-amb-local (cond
+                          (empty? amb-local) lista-params-args
+                          (empty? lista-params-args) amb-local
+                          :else (apply concat (apply assoc (apply assoc {} amb-local) lista-params-args)))]
+    (evaluar (first (nnext fnc)) amb-global nuevo-amb-local)))
 
 
 (defn aplicar-lambda-multiple
@@ -397,6 +402,11 @@
 
 ; FUNCIONES QUE DEBEN SER IMPLEMENTADAS PARA COMPLETAR EL INTERPRETE DE TLC-LISP (ADEMAS DE COMPLETAR 'EVALUAR' Y 'APLICAR-FUNCION-PRIMITIVA'):
 
+(defn is-nil?
+  [x]
+  (igual? x nil)
+)
+
 ; user=> (controlar-aridad '(a b c) 3)
 ; 3
 ; user=> (controlar-aridad '(a b c) 2)
@@ -504,7 +514,7 @@
 (defn error?
   "Devuelve true o false, segun sea o no el arg. un mensaje de error (una lista con *error* como primer elemento)."
   [l]
-  (and (list? l) (igual? '*error* (first l)))
+  (and (seq? l) (igual? '*error* (first l)))
 )
 
 
@@ -609,18 +619,17 @@
     (cond 
       (error? aridad)
         aridad
-      (not (first args))
-        nil
-      (not (list? (first args)))
+      (and (not (seq? (first args))) (not (is-nil? (first args))))
         (list '*error* 'list 'expected (first args))
-      (not (last args))
-        (first args)
-      (not (list? (last args)))
+      (and (not (seq? (last args))) (not (is-nil? (last args))))
         (list '*error* 'list 'expected (last args))
-      (= (count (flatten args)) 0)
-        nil
-      true
-        (flatten args)
+      :else
+        (let [res (concat (first args) (last args))]
+          (if (empty? res)
+            nil
+            res
+          )
+        )
     )
   )
 )
@@ -918,9 +927,9 @@
       '(*error* too-few-args)
     (> (count args) 1)
       '(*error* too-many-args)
-    (not (list? (first args)))
+    (not (seq? (first args)))
       (list '*error* 'list 'expected (first args))
-    true
+    :else
       (reverse (first args))
   )
 )
@@ -992,7 +1001,7 @@
   (cond
     (empty? (drop 2 de))
       (list (list '*error* 'list 'expected nil) ambiente)
-    (not (list? (first (drop 2 de))))
+    (not (seq? (first (drop 2 de))))
       (list (list '*error* 'list 'expected (first (drop 2 de))) ambiente)
     (not (second de))
       (list (list '*error* 'cannot-set nil) ambiente)
@@ -1041,16 +1050,16 @@
 (defn evaluar-if
   "Evalua una forma 'if'. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
   [args amb-global amb-local]
-  (let [res (first (evaluar (second args) amb-global amb-local))]
+  (let [res (evaluar (second args) amb-global amb-local)]
     (cond
-      (error? res)
-        (list res amb-global)
-      (and res (> (count args) 2))
-        (evaluar (nth args 2) amb-global amb-local)
-      (and (not res) (> (count args) 3))
-        (evaluar (last args) amb-global amb-local)
-      true
-        (list nil amb-global)
+      (error? (first res))
+        res
+      (and (not (igual? (first res) nil)) (> (count args) 2))
+        (evaluar (nth args 2) (second res) amb-local)
+      (and (igual? (first res) nil) (> (count args) 3))
+        (evaluar (last args) (second res) amb-local)
+      :else
+        (list nil (second res))
     )
   )
 )
@@ -1088,12 +1097,9 @@
   (if (= (count args) 1) 
     (list nil amb-global)
     (let [evaluado (evaluar (second args) amb-global amb-local)]
-      (list 
-        (or 
-          (first evaluado)
-          (first (evaluar-or (concat '(or) (drop 2 args)) (second evaluado) amb-local))
-        )
-        (second evaluado)
+      (if (not (igual? (first evaluado) nil))
+        evaluado
+        (evaluar-or (concat '(or) (drop 2 args)) (second evaluado) amb-local)
       )
     )
   )
