@@ -4,7 +4,7 @@ Trabajo práctico de la materia Lenguajes Formales (75.14) realizado durante el 
 
 ## Ejecución del interprete
 
-- En primer lugar, es necesario instalar [leiningen](https://leiningen.org/#install).
+- Instalar [leiningen](https://leiningen.org/#install).
 - `lein run`: ejecuta el interprete
 - `lein test`: corre los tests
 
